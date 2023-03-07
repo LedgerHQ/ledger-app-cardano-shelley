@@ -89,9 +89,9 @@ unsigned char io_event(unsigned char channel MARK_UNUSED)
 		break;
 
 	case SEPROXYHAL_TAG_BUTTON_PUSH_EVENT:
-#ifdef HAVE_BAGL
+		#ifdef HAVE_BAGL
 		UX_BUTTON_PUSH_EVENT(G_io_seproxyhal_spi_buffer);
-#endif
+		#endif
 		break;
 
 	case SEPROXYHAL_TAG_STATUS_EVENT:
@@ -104,12 +104,12 @@ unsigned char io_event(unsigned char channel MARK_UNUSED)
 		break;
 
 	case SEPROXYHAL_TAG_DISPLAY_PROCESSED_EVENT:
-#ifdef HAVE_BAGL
+		#ifdef HAVE_BAGL
 		UX_DISPLAYED_EVENT({});
-#endif
-#ifdef HAVE_NBGL
-        UX_DEFAULT_EVENT();
-#endif
+		#endif
+		#ifdef HAVE_NBGL
+		UX_DEFAULT_EVENT();
+		#endif
 		break;
 
 	case SEPROXYHAL_TAG_TICKER_EVENT:

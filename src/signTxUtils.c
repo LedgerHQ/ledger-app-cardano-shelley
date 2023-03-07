@@ -17,11 +17,11 @@ void respondSuccessEmptyMsg()
 {
 	TRACE();
 	io_send_buf(SUCCESS, NULL, 0);
-#ifdef HAVE_BAGL
+	#ifdef HAVE_BAGL
 	ui_displayBusy(); // displays dots, called only after I/O to avoid freezing
-#elif defined(HAVE_NBGL)
+	#elif defined(HAVE_NBGL)
 	nbgl_useCaseSpinner((char*)"Processing");
-#endif
+	#endif
 }
 
 bool violatesSingleAccountOrStoreIt(const bip44_path_t* path)
