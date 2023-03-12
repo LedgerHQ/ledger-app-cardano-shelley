@@ -335,10 +335,12 @@ void handlePoolFinancials_ui_runStep()
 
 // ============================== POOL REWARD ACCOUNT ==============================
 
+#ifdef HAVE_NBGL
 static void handlePoolRewardAccount_ui_runStep_cb(void)
 {
 	finish_display(handlePoolRewardAccount_ui_runStep, respond_with_user_reject);
 }
+#endif
 
 void handlePoolRewardAccount_ui_runStep()
 {
