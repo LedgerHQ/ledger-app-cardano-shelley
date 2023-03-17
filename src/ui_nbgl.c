@@ -288,21 +288,16 @@ static void _display_warning(void) {
 #endif
 }
 
-static void confirmation_status_callback(void) {
-  if (uiContext.confirmedStatus) {
-    nbgl_useCaseStatus(uiContext.confirmedStatus, true, ui_idle_flow);
-  } else {
-    nbgl_useCaseStatus((char *)"ACTION\nCONFIRMED", true, ui_idle_flow);
-  }
-
-}
-
 static void display_confirmation_status(void) {
   if (uiContext.approvedCallback) {
     uiContext.approvedCallback();
   }
 
-  trigger_callback(&confirmation_status_callback);
+  if (uiContext.confirmedStatus) {
+    nbgl_useCaseStatus(uiContext.confirmedStatus, true, ui_idle_flow);
+  } else {
+    nbgl_useCaseStatus((char *)"ACTION\nCONFIRMED", true, ui_idle_flow);
+  }
 }
 
 static void display_address_callback(void) {
