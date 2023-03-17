@@ -39,7 +39,7 @@ typedef struct {
   char *rejectedStatus;  // text displayed in rejection page (after reject confirmed)
   callback_t approvedCallback;
   callback_t rejectedCallback;
-  callback_t pendingCallback;
+  callback_t pendingDisplayPageFn;
   bool pendingElement;
   uint8_t currentLineCount;
   uint8_t currentElementCount;
@@ -116,6 +116,7 @@ void set_light_confirmation(bool needed) {
 
 static void display_callback(int token, unsigned char index) {
   (void)index;
+  callback_t callback;
 
   release_context(); 
 
@@ -124,7 +125,15 @@ static void display_callback(int token, unsigned char index) {
     display_cancel();
     break;
   case ACCEPT_PAGE_TOKEN:
-    uiContext.approvedCallback();
+    if (uiContext.pendingDisplayPageFn) {
+      // Hook the approve callback so that the pending page is displayed
+      // Once this page is approved, the approve callback will be called
+      callback = uiContext.pendingDisplayPageFn;
+      uiContext.pendingDisplayPageFn = NULL;
+    } else {
+      callback = uiContext.approvedCallback;
+    }
+    callback();
     break;
   case CONFIRMATION_STATUS_TOKEN:
     display_confirmation_status();
@@ -138,11 +147,6 @@ static void _display_confirmation(void) {
   TRACE("_confirmation");
 
   release_context();
-
-  if (uiContext.pendingCallback) {
-    uiContext.approvedCallback = uiContext.pendingCallback;
-    uiContext.pendingCallback = NULL;
-  }
 
   nbgl_pageNavigationInfo_t info = {
       .activePage = 0,
@@ -181,10 +185,6 @@ static void light_confirm_callback(bool confirm) {
 
 static void _display_light_confirmation(void) {
   TRACE("_light_confirmation");
-  if (uiContext.pendingCallback) {
-    uiContext.approvedCallback = uiContext.pendingCallback;
-    uiContext.pendingCallback = NULL;
-  }
 
   nbgl_useCaseChoice(&C_cardano_64, uiContext.pageText[0], (char *)"",
                      (char *)"Confirm", (char *)"Cancel", light_confirm_callback);
@@ -258,10 +258,6 @@ static void _display_page(void) {
 
 static void _display_prompt(void) {
   TRACE("_prompt");
-  if (uiContext.pendingCallback) {
-    uiContext.approvedCallback = uiContext.pendingCallback;
-    uiContext.pendingCallback = NULL;
-  }
 
   nbgl_useCaseReviewStart(&C_cardano_64, uiContext.pageText[0],
                           uiContext.pageText[1], (char *)"Reject if not sure",
@@ -274,10 +270,6 @@ static void _display_prompt(void) {
 
 static void _display_warning(void) {
   TRACE("_warning");
-  if (uiContext.pendingCallback) {
-    uiContext.approvedCallback = uiContext.pendingCallback;
-    uiContext.pendingCallback = NULL;
-  }
 
   nbgl_useCaseReviewStart(&C_warning64px, (char *)"WARNING",
                           uiContext.pageText[0], (char *)"Reject if not sure",
@@ -369,17 +361,25 @@ static void handle_pending_element(void) {
     uiContext.pendingElement = false;
 }
 
-static void _display_page_or_call_function(callback_t callback) {
+static void _display_page_or_call_function(callback_t displayPageFn) {
   if (uiContext.pendingElement) {
       handle_pending_element();
   }
 
   if (uiContext.currentElementCount > 0) {
-    uiContext.pendingCallback = uiContext.approvedCallback;
-    uiContext.approvedCallback = callback;
+    // We were request to display a page using displayPageFn and then call
+    // specific callbacks. However we have pending elements to display first.
+    // Therefore, temporally save displayPageFn in pendingDisplayPageFn and
+    // display these pending elements.
+    // Once these pending elements page is approved, the geenric display_callback()
+    // function will be called, and it will then execute the function stored
+    // in pendingDisplayPageFn instead of the approvedCallback.
+    // therefore our screen will be displayed, and if it is approved, at this moment
+    // the approvedCallback will be called.
+    uiContext.pendingDisplayPageFn = displayPageFn;
     _display_page();
   } else {
-    callback();
+    displayPageFn(uiContext.approvedCallback);
   }
 }
 
