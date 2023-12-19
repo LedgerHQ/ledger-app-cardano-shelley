@@ -22,6 +22,10 @@ APPVERSION_N = 0
 APPVERSION_P = 0
 APPVERSION   = "$(APPVERSION_M).$(APPVERSION_N).$(APPVERSION_P)"
 
+# temporary, only for experimental release
+TLVRAW_APP_LOAD_PARAMS += 9F:01
+DEFINES += HAVE_PENDING_REVIEW_SCREEN
+
 ifeq ($(BOLOS_SDK),)
 $(error Environment variable BOLOS_SDK is not set)
 endif
