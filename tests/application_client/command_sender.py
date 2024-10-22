@@ -12,6 +12,7 @@ from contextlib import contextmanager
 from ragger.backend.interface import BackendInterface, RAPDU
 
 from input_files.derive_address import DeriveAddressTestCase
+from input_files.pubkey import PubKeyTestCase
 from application_client.command_builder import CommandBuilder, P1Type
 from application_client.app_def import Errors
 
@@ -127,3 +128,31 @@ class CommandSender:
         """
 
         return self._exchange(self._cmd_builder.derive_address(p1, testCase))
+
+
+    @contextmanager
+    def get_pubkey_async(self, testCase: PubKeyTestCase) -> Generator[None, None, None]:
+        """APDU Get Public Key
+
+        Args:
+            testCase (PubKeyTestCase): Test parameters
+
+        Returns:
+            Generator
+        """
+
+        with self._exchange_async(self._cmd_builder.get_pubkey(testCase)):
+            yield
+
+
+    def get_pubkey(self, testCase: PubKeyTestCase) -> RAPDU:
+        """APDU Get Public Key
+
+        Args:
+            testCase (PubKeyTestCase): Test parameters
+
+        Returns:
+            Response APDU
+        """
+
+        return self._exchange(self._cmd_builder.get_pubkey(testCase))

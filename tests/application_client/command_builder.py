@@ -11,6 +11,7 @@ from enum import IntEnum
 from ragger.bip import pack_derivation_path
 
 from input_files.derive_address import DeriveAddressTestCase
+from input_files.pubkey import PubKeyTestCase
 from application_client.app_def import InsType, AddressType, StakingDataSourceType
 
 
@@ -115,3 +116,18 @@ class CommandBuilder:
             raise NotImplementedError("Not implemented yet")
 
         return self._serialize(InsType.DERIVE_PUBLIC_ADDR, p1, 0x00, data)
+
+
+    def get_pubkey(self, testCase: PubKeyTestCase) -> bytes:
+        """APDU Builder for Public Key
+
+        Args:
+            testCase (PubKeyTestCase): Test parameters
+
+        Returns:
+            Response APDU
+        """
+
+        data = bytes()
+        data += pack_derivation_path(testCase.path)
+        return self._serialize(InsType.GET_PUBLIC_ADDR, 0x00, 0x00, data)
