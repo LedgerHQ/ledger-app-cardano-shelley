@@ -186,12 +186,12 @@ static void handleOutput_addressBytes() {
 #ifdef HAVE_SWAP
     if (G_called_from_swap) {
         if (!swap_check_destination_validity(&output.destination)) {
-            send_swap_error(ERROR_WRONG_DESTINATION, APP_CODE_DEFAULT, NULL);
+            send_swap_error_with_ctx(ERROR_WRONG_DESTINATION, APP_CODE_DEFAULT, NULL);
             // unreachable
             os_sched_exit(0);
         }
         if (!swap_check_amount_validity(output.amount)) {
-            send_swap_error(ERROR_WRONG_AMOUNT, APP_CODE_DEFAULT, NULL);
+            send_swap_error_with_ctx(ERROR_WRONG_AMOUNT, APP_CODE_DEFAULT, NULL);
             // unreachable
             os_sched_exit(0);
         }

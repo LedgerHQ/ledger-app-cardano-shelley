@@ -22,4 +22,4 @@ typedef struct {
     const char *str2;
 } swap_error_t;
 
-void send_swap_error(uint8_t error_code, uint8_t app_code, swap_error_t *error_ctx);
+void send_swap_error_with_ctx(uint8_t error_code, uint8_t app_code, swap_error_t *error_ctx);

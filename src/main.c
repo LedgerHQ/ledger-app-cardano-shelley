@@ -149,9 +149,9 @@ void app_main(void) {
 #ifdef HAVE_SWAP
                 if (G_called_from_swap) {
                     if (e == ERR_UNKNOWN_INS) {
-                        send_swap_error(ERROR_GENERIC, APP_CODE_BAD_INS, NULL);
+                        send_swap_error_with_ctx(ERROR_GENERIC, APP_CODE_BAD_INS, NULL);
                     } else {
-                        send_swap_error(ERROR_GENERIC, APP_CODE_DEFAULT, NULL);
+                        send_swap_error_with_ctx(ERROR_GENERIC, APP_CODE_DEFAULT, NULL);
                     }
                     // unreachable
                     os_sched_exit(0);

@@ -31,11 +31,11 @@ static void set_error(const char *str, uint32_t *tx) {
     }
 }
 
-__attribute__((noreturn)) void send_swap_error(uint8_t error_code,
+__attribute__((noreturn)) void send_swap_error_with_ctx(uint8_t error_code,
                                                uint8_t app_code,
                                                swap_error_t *error_ctx) {
     uint32_t tx = 0;
-    PRINTF("send_swap_error: error_code=0x%02x, app_code=0x%02x\n", error_code, app_code);
+    PRINTF("send_swap_error_with_ctx: error_code=0x%02x, app_code=0x%02x\n", error_code, app_code);
     // Set RAPDU error codes
     G_io_apdu_buffer[tx++] = error_code;
     G_io_apdu_buffer[tx++] = app_code;

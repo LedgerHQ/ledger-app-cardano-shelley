@@ -945,7 +945,7 @@ __noinline_due_to_stack__ static void signTx_handleFeeAPDU(uint8_t p2,
 #ifdef HAVE_SWAP
     if (G_called_from_swap) {
         if (!swap_check_fee_validity(BODY_CTX->stageData.fee)) {
-            send_swap_error(ERROR_WRONG_FEES, APP_CODE_DEFAULT, NULL);
+            send_swap_error_with_ctx(ERROR_WRONG_FEES, APP_CODE_DEFAULT, NULL);
             // unreachable
             os_sched_exit(0);
         }
