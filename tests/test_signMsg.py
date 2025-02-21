@@ -103,7 +103,13 @@ def _signMsg_chunk(firmware: Firmware,
                 moves = testCase.nav.chunk
             navigator.navigate(moves)
         else:
-            navigator.navigate([NavInsID.TAPPABLE_CENTER_TAP])
+            moves = [NavInsID.TAPPABLE_CENTER_TAP]
+            if len(testCase.msgData.messageHex) > 0 and \
+                (testCase.msgData.addressFieldType != MessageAddressFieldType.ADDRESS or \
+                (testCase.msgData.addressFieldType == MessageAddressFieldType.ADDRESS and \
+                 testCase.msgData.addressDesc.addrType != AddressType.BASE_PAYMENT_KEY_STAKE_KEY)):
+                moves += [NavInsID.TAPPABLE_CENTER_TAP]
+            navigator.navigate(moves, screen_change_after_last_instruction=False)
     # Check the status (Asynchronous)
     response = client.get_async_response()
     assert response and response.status == Errors.SW_SUCCESS
